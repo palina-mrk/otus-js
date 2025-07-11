@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="style.css">
+	<title>JS-basic:hw2</title>
+</head>
+<body>
+	<main>
+		<div class="main">
+		<section class="title">
+			<h1>Домашняя работа №2</h1>
+			<header>описание тестовых сценариев</header>
+		</section>
+		<section class="task">
+		<section>
+			<h2>Скрипт, который нужно протестировать:</h2>
+			<p>На странице должны быть три текстовых параграфа,
+				 поле ввода и кнопка. Напишите скрипт, который 
+				 будет выполнять следующие условия:</p>
+			<ul>
+				<li>Кнопка скрыта, если в поле ввода нет значения</li>
+				<li>При клике на кнопку добавляется новый параграф, 
+					содержащий текст из поля ввода</li>
+				<li>Если параграфов становится больше, 
+					первый из них удаляется</li>
+			</ul>
+		</section>
+		<section class="text">
+				<h2>Сценарии тестирования:</h2>
+				<ol>
+					<li> Проверяем наличие трех параграфов на странице
+						<ul>
+							<li>
+								подготовка: необходимое количество параграфов - 3: <br> 
+                <code>let pExpect = 3;</code>
+							</li>
+							<li>
+								действие: подсчет параграфов <br>
+                <code>let pCount = document.querySelectorAll('p').length;</code>
+							</li>
+							<li>
+								проверка: <br>
+                <code>expect(pCount).toBe(pExpect);</code>
+							</li>
+						</ul>
+					</li>
+					<li> Проверяем наличие поля ввода input, и что его тип - text
+						<ul>
+							<li>
+								подготовка: тип input равен text <br> 
+                <code>let tExpect = 'text';</code>
+							</li>
+							<li>
+								действие: получить поле ввода <br>
+                <code>let inputField = document.querySelector('input');</code>
+							</li>
+							<li>
+								проверка: количество параграфов равно 3 <br>
+                <code>expect(inputField ?? null).toBe(inputField);</code><br>
+                <code>expect(inputField.type).toBe(text);</code> 
+							</li>
+						</ul>
+					</li>
+					
+				</ol>
+			</section>
+		</section>
+		</div>
+	</main>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.6.3",
+    "jest-environment-jsdom": "^30.0.4"
+  },
+  "transform": {
+  "^.+\\.html?$": "html-loader-jest"
+  }
+}
