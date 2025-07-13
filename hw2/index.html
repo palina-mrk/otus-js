@@ -29,16 +29,17 @@
 		</section>
 		<section class="text">
 				<h2>Сценарии тестирования:</h2>
+				<h3>Блок первый: проверка контента страницы до запуска скрипта</h3>
 				<ol>
 					<li> Проверяем наличие трех параграфов на странице
 						<ul>
 							<li>
 								подготовка: необходимое количество параграфов - 3: <br> 
-                <code>let pExpect = 3;</code>
+                <code>const pExpect = 3;</code>
 							</li>
 							<li>
 								действие: подсчет параграфов <br>
-                <code>let pCount = document.querySelectorAll('p').length;</code>
+                <code>const pCount = document.querySelectorAll('p').length;</code>
 							</li>
 							<li>
 								проверка: <br>
@@ -46,25 +47,242 @@
 							</li>
 						</ul>
 					</li>
-					<li> Проверяем наличие поля ввода input, и что его тип - text
+					<li> Проверяем наличие поля ввода input
 						<ul>
 							<li>
-								подготовка: тип input равен text <br> 
-                <code>let tExpect = 'text';</code>
-							</li>
+								подготовка: -- <br> 
+              </li>
 							<li>
 								действие: получить поле ввода <br>
-                <code>let inputField = document.querySelector('input');</code>
+                <code>const inputField = document.querySelector('input');</code>
+							</li>
+							<li>
+								проверка: поле ввода - не undefined и не null <br>
+                <code>expect(inputField ?? 10).toBe(inputField);</code>
+              </li>
+						</ul>
+					</li>
+          <li> Проверяем, что тип поля ввода - text
+						<ul>
+							<li>
+								подготовка: тип input должен быть равен text <br> 
+                <code>const inputTypeExpect = 'text';</code>
+							</li>
+							<li>
+								действие: получить тип поля ввода <br>
+                <code>const inputType = document.querySelector('input').getAttribute('type');</code>
 							</li>
 							<li>
 								проверка: количество параграфов равно 3 <br>
-                <code>expect(inputField ?? null).toBe(inputField);</code><br>
-                <code>expect(inputField.type).toBe(text);</code> 
+                <code>expect(inputType).toBe(inputTypeExpect);</code>
 							</li>
 						</ul>
 					</li>
-					
+          <li> Проверяем наличие кнопки
+						<ul>
+							<li>
+								подготовка: -- <br> 
+							</li>
+							<li>
+								действие: получить кнопку <br>
+                <code>const button = document.querySelector('button');</code>
+							</li>
+							<li>
+								проверка: кнопка существует <br>
+                <code>expect(button ?? 10).toBe(button);</code>
+              </li>
+						</ul>
+					</li>
+          <li> Проверяем, что кнопка скрыта
+						<ul>
+							<li>
+								подготовка: -- <br> 
+							</li>
+							<li>
+								действие: получить кнопку <br>
+                <code>const button = document.querySelector('button');</code>
+							</li>
+							<li>
+								проверка: кнопка скрыта <br>
+                <code>expect(button.hidden).toBe(true);</code>
+              </li>
+						</ul>
+					</li>
 				</ol>
+				<h3>Блок второй: проверка работы функций</h3>
+				<ol start="6">
+					<li> Проверяем, что кнопка скрыта
+						<ul>
+							<li>
+								подготовка: -- <br> 
+							</li>
+							<li>
+								действие: получить кнопку <br>
+                <code>const button = document.querySelector('button');</code>
+							</li>
+							<li>
+								проверка: кнопка скрыта <br>
+                <code>expect(button.hidden).toBe(true);</code>
+              </li>
+						</ul>
+					<li> Проверяем, что функция очищает поле ввода
+						<ul>
+							<li>
+								подготовка: вводим текст в поле ввода <br>
+								<code>field.value = "some text";</code>
+							</li>
+							<li>
+								действие: вызов функции <br>
+                <code>clearField();</code>
+							</li>
+							<li>
+								проверка: поле ввода очищено <br>
+                <code>expect(field.value).toBe("");</code>
+              </li>
+						</ul>
+					<li> Проверяем, что добавляет параграф с текстом из поля ввода
+						<ul>
+							<li>
+								подготовка: добавляем текст в поле ввода,<br> 
+								запоминаем текст существующих параграфов и их количество <br> 
+								<code>field.value = "some text"; <br>
+									const pCountInitial = document.querySelectorAll('p').length; <br>
+    							const paragraphs = []; <br>
+    							for(let i = 0; i < pCountInitial; i++) <br>
+      						&ensp;paragraphs.push(document.querySelectorAll('p')[i].innerText);
+								</code>
+							</li>
+							<li>
+								действие: вызов функции <br>
+                <code>addParagraph();</code>
+							</li>
+							<li>
+								проверка: параграфов стало на один больше,<br>
+								текст первых параграфов не изменился, <br>
+								текст добавленного совпадает с текстом из поля ввода
+                <code>
+									  expect(document.querySelectorAll('p').length).toBe(pCountInitial + 1);<br>
+    								for(let i = 0; i < pCountInitial; i++)<br>
+     								&ensp;expect(document.querySelectorAll('p')[i].innerText).toBe(paragraphs[i]);<br>
+    								expect(document.querySelectorAll('p')[pCountInitial].innerText).toBe("some text");
+								</code>
+              </li>
+						</ul>
+					<li> Проверяем, что стирает первый параграф
+						<ul>
+							<li>
+								подготовка: запоминаем количество параграфов<br>
+								и текст параграфов, начиная со второго<br> 
+								<code>
+									const pCountInitial = document.querySelectorAll('p').length; <br>
+    							const paragraphsFromSecond = [];<br>
+    							for(let i = 1; i < pCountInitial; i++)<br>
+      						&ensp;paragraphsFromSecond.push(document.querySelectorAll('p')[i].innerText);
+								</code>
+							</li>
+							<li>
+								действие: вызов функции <br>
+                <code>removeFirstParagraph();</code>
+							</li>
+							<li>
+								проверка: количество параграфов уменьшилось на один,<br>
+								их текст совпадает с текстом старых параграфов, начиная со второго <br>
+                <code>
+    expect(document.querySelectorAll('p').length).toBe(pCountInitial - 1);<br>
+    for(let i = 0; i < pCountInitial - 1; i++)<br>
+    &ensp;expect(document.querySelectorAll('p')[i].innerText).toBe(paragraphsFromSecond[i]);
+								</code>
+              </li>
+						</ul>
+					<li> Проверяем, что показывает кнопку при появлении текста
+						<ul>
+							<li>
+								подготовка: записывааем текст в поле<br>
+								<code>  field.value = "some text";</code> 
+							</li>
+							<li>
+								действие: вызов функции <br>
+                <code>  changeButtonState();</code>
+							</li>
+							<li>
+								проверка: кнопка показана <br>
+                <code>  expect(button.hidden).toBe(false);</code>
+              </li>
+						</ul>
+					<li> Проверяем, что скрывает кнопку, если текст состоит из пробелов
+						<ul>
+							<li>
+								подготовка: записывааем текст в поле<br>
+								<code>  field.value = "   ";</code> 
+							</li>
+							<li>
+								действие: вызов функции <br>
+                <code>  changeButtonState();</code>
+							</li>
+							<li>
+								проверка: кнопка скрыта <br>
+                <code>  expect(button.hidden).toBe(false);</code>
+              </li>
+						</ul>
+					<li> 
+						<ul>Проверяем событие нажатия на кнопку (работают сразу несколько функций) <br>
+							добавляется заданный параграф <br>
+							если уже пять параграфов, при этом исчезает первый<br>
+							то есть количество параграфов остается равно 5
+							<li>подготовка: запоминаем количество параграфов, записываем текст в поле<br>
+								<code>let paragraphs = document.querySelectorAll('p');<br>
+    const pCount = paragraphs.length;<br>
+    field.value = "some text 4";</code> 
+							</li>
+							<li>
+								действие: клик на кнопку <br>
+                <code>button.click();</code>
+							</li>
+							<li>
+								проверка: текст последнего параграфа стал равен заданному тексту<br>
+                <code>paragraphs = document.querySelectorAll('p');<br>
+    expect(paragraphs[pCount].innerText).toBe("some text 4");
+    </code>
+              </li>
+							<li>подготовка: записываем другой текст в поле<br>
+								<code>field.value = "some text 5";</code> 
+							</li>
+							<li>
+								действие: клик на кнопку <br>
+                <code>button.click();</code>
+							</li>
+							<li>
+								проверка: текст последнего параграфа стал равен заданному тексту<br>
+                <code>paragraphs = document.querySelectorAll('p');<br>
+    expect(paragraphs[pCount + 1].innerText).toBe("some text 5");
+    </code>
+              </li>
+						<li>подготовка: записываем другой текст в поле<br>
+								<code>field.value = "some text 6";</code> 
+							</li>
+							<li>
+								действие: клик на кнопку <br>
+                <code>button.click();</code>
+							</li>
+							<li>
+								проверка: количество параграфов равно 5,<br> 
+								текст параграфа равен заданному тексту<br>
+                <code>paragraphs = document.querySelectorAll('p');<br>
+   expect(paragraphs.length).toBe(5);
+    expect(paragraphs[4].innerText).toBe("some text 6"); 
+	</code>
+              </li>
+						</ul>
+					</li>
+				</ol>
+			</section>
+			<section class="refs">
+				<h2>Ссылки на файлы с кодом:</h2>
+				<p>
+				<a href="./script.js" target="_blank">скрипт</a> на JavaScript<br>
+				<a href="./example-page.html" target="_blank">страница HTML</a>, на которой запускается скрипт<br>
+				<a href="./example-page.test.js" target="_blank">тесты</a> на скрипт			
+				</p>
 			</section>
 		</section>
 		</div>

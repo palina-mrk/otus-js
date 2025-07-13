@@ -1,12 +1,15 @@
 const button = document.querySelector('.button');
 const field  = document.querySelector('.input-field');
-button.hidden = true;
-field.focus();
 
-field.addEventListener('keydown',keyPress);
-field.addEventListener('keyup',  keyPress);
-field.oninput = changeButtonState;
-button.addEventListener('click', buttonClicked);
+eventStarter();
+
+function eventStarter(){
+  field.focus();
+  field.addEventListener('keydown',keyPress);
+ // field.addEventListener('keyup',  keyPress);
+  field.oninput = changeButtonState;
+  button.addEventListener('click', buttonClicked);
+}
 
 function keyPress(event){
   if((event.key == "Enter") && (field.value.length != 0))
@@ -16,7 +19,7 @@ function keyPress(event){
 }
 
 function changeButtonState(){
-  button.hidden = (field.value.length == 0);
+  button.hidden = (field.value.trim().length == 0);
 }
 
 function buttonClicked(){
@@ -49,3 +52,16 @@ function clearField(){
 function hideButton(){
   button.hidden = true;
 }
+
+module.exports = {
+  button,
+  field,
+  eventStarter,
+  keyPress,
+  changeButtonState,
+  buttonClicked,
+  removeFirstParagraph,
+  addParagraph,
+  clearField,
+  hideButton,  
+};
