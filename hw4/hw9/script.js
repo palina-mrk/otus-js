@@ -1,10 +1,18 @@
 document.querySelector('#task1').onclick = () => {
   const str = askInput("Input triangle sides:");
-  if(parseNumberStr(str).length == 3){
-    let [a, b, c] = parseNumberStr(str);
-    console.log(`${a}, ${b}, ${c}  ${isRightTriangle(a,b,c) ? 'are' : 'are not'} sides of a right triangle`);
-  } else
-    console.log('Invalid input!'); 
+  const sides = getNumbersFromStr(str);  
+  if(sides.length != 3)
+    console.log('Invalid input!');
+  else {
+    const [a, b, c] = sides;
+
+    if(!isTriangle(a, b, c))
+      console.log(`${a}, ${b}, ${c} are not sides of a triangle`);
+    else if(!isRightTriangle(a, b, c))
+      console.log(`${a}, ${b}, ${c} are not sides of a right triangle`);
+    else 
+      console.log(`${a}, ${b}, ${c} are sides of a right triangle`);
+  } 
 }
 
 document.querySelector('#task2').onclick = () => {
@@ -17,17 +25,32 @@ document.querySelector('#task2').onclick = () => {
 
 document.querySelector('#task3').onclick = () => {
   const str = askInput("Input three coefficients of a square equation:");
-  if(parseNumberStr(str).length == 3){
-    let [a, b, c] = parseNumberStr(str);
-    console.log(`Solutions of equation ${showSquareEquation(a,b,c)}:  ${showSolutions(solveSquareEquation(a, b, c))}`);
-  } else
+  const coefficients = getNumbersFromStr(str);  
+  if(coefficients.length != 3)
     console.log('Invalid input!'); 
+  else {
+    let [a, b, c] = coefficients;
+
+    console.log(`Solutions of equation ${showSquareEquation(a,b,c)}:  ${showSolutions(solveSquareEquation(a, b, c))}`);
+  } 
 }
 
-function parseNumberStr (str) {
-  const sides = str.split(' ').filter((el) => el.length ).filter(el => (el != '')).map((el) => Number(el));
-  return sides;
+function getNumbersFromStr (str) {
+  const numbers = str.split(' ').filter((el) => el.length ).filter(el => (el != '')).map((el) => Number(el));
+  return numbers;
 } 
+
+function isTriangle (a, b, c){
+  const min = Math.min(a, b, c);
+  const max = Math.max(a, b, c);
+  
+  if(min <= 0)
+    return false;
+  if(2*max >= a + b + c)
+    return false;
+  
+  return true;
+}
 
 function isRightTriangle (a, b, c){
   const min = Math.min(a, b, c);
@@ -153,7 +176,8 @@ function askInput(message) {
 }
 
 module.exports = {
-  parseNumberStr,
+  getNumbersFromStr,
+  isTriangle,
   isRightTriangle,
   calcCircleArea,
   calcCircleLength,

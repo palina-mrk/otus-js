@@ -6,61 +6,196 @@ const htmlData = fs.readFileSync("./index.html");
 document.body.innerHTML = htmlData;
 
 const  { 
-  calcSum,
-  calcComposition,
-  calcSymbolsCount,
+  getNumbersFromStr,
+  isTriangle,
+  isRightTriangle,
+  calcCircleArea,
+  calcCircleLength,
+  showConstantEquation,
+  showLinearEquation,
+  showSquareEquation,
+  solveConstantEquation,
+  solveLinearEquation,
+  solveSquareEquation,
+  showSolutions,
   askInput,
-  calcDigitsSum
 } = require('./script.js');
 
 describe(`Checks the first task point`, () => {
   
-  it("is a function", () => {
-    expect(calcSum).toBeInstanceOf(Function);
+  it("getNumbersFromStr(str) is a function", () => {
+    expect(getNumbersFromStr).toBeInstanceOf(Function);
   });
   
-  const numbersA = [1,'2',-10];
-  const numbersB = [3,'0',-20];
-  const sums = [4,2,-30];
+  const strings = ["  1.2   1.3 1 ",' .01  9 2','4 4 ',''];
+  const triples = [[1.2,1.3,1],[.01,9,2],[4,4],[]];
   
-  for (let i = 0; i < sums.length; i++){
-    it(`returns ${sums[i]} to be sum of ${numbersA[i]} and ${numbersB[i]}`, () => {
-      expect(calcSum(numbersA[i], numbersB[i])).toBe(sums[i]);
+  for (let i = 0; i < strings.length; i++)
+    it(`returns ${triples[i]} to be array of numbers from the string '${strings[i]}'`, () => {
+      expect(getNumbersFromStr(strings[i]).length).toBe(triples[i].length);
+      for(let j = 0; j < triples[i].length; j++)
+        expect(getNumbersFromStr(strings[i])[j]).toBe(triples[i][j]);
     });
-  }
-  
-  it("is a function", () => {
-    expect(calcComposition).toBeInstanceOf(Function);
+
+  it("getNumbersFromStr(str) is a function", () => {
+    expect(getNumbersFromStr).toBeInstanceOf(Function);
   });
   
-  const compositions = [3,0,200];
+  it("isTriangle(a, b, c) is a function", () => {
+    expect(isTriangle).toBeInstanceOf(Function);
+  });
   
-  for (let i = 0; i < sums.length; i++){
-    it(`returns ${compositions[i]} to be composition of ${numbersA[i]} and ${numbersB[i]}`, () => {
-      expect(calcComposition(numbersA[i], numbersB[i])).toBe(compositions[i]);
+  const sides = [[2,2,2],[15,10,6],[1,1,0.5]];
+  const nonSides = [[4,2,2],[-15,10,6],[1,1,0],[15,10,5],[0,0,0]];
+  
+  for (let i = 0; i < sides.length; i++)
+    it(`returns true for ${sides[i][0]}, ${sides[i][1]}, ${sides[i][2]} to be sides of triangle`, () => {
+      let [a, b, c] = sides[i];
+      expect(isTriangle(a, b, c)).toBe(true);
+      expect(isTriangle(a, c, b)).toBe(true);
+      expect(isTriangle(b, a, c)).toBe(true);
+      expect(isTriangle(b, c, a)).toBe(true);
+      expect(isTriangle(c, a, b)).toBe(true);
+      expect(isTriangle(c, b, a)).toBe(true);
     });
-  }
+  for (let i = 0; i < nonSides.length; i++)
+    it(`returns false for ${nonSides[i][0]}, ${nonSides[i][1]}, ${nonSides[i][2]} to be sides of triangle`, () => {
+      let [a, b, c] = nonSides[i];
+      expect(isTriangle(a, b, c)).toBe(false);
+      expect(isTriangle(a, c, b)).toBe(false);
+      expect(isTriangle(b, a, c)).toBe(false);
+      expect(isTriangle(b, c, a)).toBe(false);
+      expect(isTriangle(c, a, b)).toBe(false);
+      expect(isTriangle(c, b, a)).toBe(false);
+    });
+
+  it("isRightTriangle(a, b, c) is a function", () => {
+    expect(isRightTriangle).toBeInstanceOf(Function);
+  });
+
+  const sidesOfRight = [[3,4,5],[12,5,13]];
+  const nonSidesOfRight = [[3,3,5],[12,-5,13],[-3,-4,-5]];
+  
+  for (let i = 0; i < sidesOfRight.length; i++)
+    it(`returns true for ${sidesOfRight[i][0]}, ${sidesOfRight[i][1]}, ${sidesOfRight[i][2]} to be sides of a right triangle`, () => {
+      let [a, b, c] = sidesOfRight[i];
+      expect(isRightTriangle(a, b, c)).toBe(true);
+      expect(isRightTriangle(a, c, b)).toBe(true);
+      expect(isRightTriangle(b, a, c)).toBe(true);
+      expect(isRightTriangle(b, c, a)).toBe(true);
+      expect(isRightTriangle(c, a, b)).toBe(true);
+      expect(isRightTriangle(c, b, a)).toBe(true);
+    });
+  for (let i = 0; i < nonSidesOfRight.length; i++)
+    it(`returns false for ${nonSidesOfRight[i][0]}, ${nonSidesOfRight[i][1]}, ${nonSidesOfRight[i][2]} to be sides of a right triangle`, () => {
+      let [a, b, c] = nonSidesOfRight[i];
+      expect(isRightTriangle(a, b, c)).toBe(false);
+      expect(isRightTriangle(a, c, b)).toBe(false);
+      expect(isRightTriangle(b, a, c)).toBe(false);
+      expect(isRightTriangle(b, c, a)).toBe(false);
+      expect(isRightTriangle(c, a, b)).toBe(false);
+      expect(isRightTriangle(c, b, a)).toBe(false);
+    });
 });
 
 describe(`Checks the second task point`, () => {
-  it("is a function", () => {
-    expect(calcSymbolsCount).toBeInstanceOf(Function);
+
+  it("calcCircleArea(R) is a function", () => {
+    expect(calcCircleArea).toBeInstanceOf(Function);
   });
 
-  const stringsA = ["123","","Hello,"];
-  const stringsB = ["aaa","bcd"," jest!"];
-  const symbolsCounts = [6,3,12];
+  const radiuces = [1, 2, 0.4];
+  const circleAreas = [3.1416, 12.5663, 0.5026];
+  const circleLengthes = [6.2832, 12.5663, 2.5133];
   
-  for (let i = 0; i < symbolsCounts.length; i++){
-    it(`returns ${symbolsCounts[i]} to be number of symbols in ${stringsA[i]} and ${stringsB[i]}`, () => {
-      expect(calcSymbolsCount(stringsA[i], stringsB[i])).toBe(symbolsCounts[i]);
+  for (let i = 0; i < radiuces.length; i++)
+    it(`returns ${circleAreas[i]} to be area of the circle with radius ${radiuces[i]}`, () => {
+      const result = calcCircleArea(radiuces[i]);
+      const diff = result - circleAreas[i];
+      
+      expect(diff.toFixed(3) == 0).toBe(true);
     });
-  }
+    
+  it("calcCircleLength(R) is a function", () => {
+    expect(calcCircleLength).toBeInstanceOf(Function);
+  });
+
+  for (let i = 0; i < radiuces.length; i++)
+    it(`returns ${circleLengthes[i]} to be length of the circle with radius ${radiuces[i]}`, () => {
+      const result = calcCircleLength(radiuces[i]);
+      const diff = result - circleLengthes[i];
+      
+      expect(diff.toFixed(3) == 0).toBe(true);
+    });
+    
+
 });
 
 describe(`Checks the third task point`, () => {
   
-  it("is a function", () => {
+  const coeffsC   = [ 0, 1, -1, 0.04, -0.6, 3];
+  const constStr  = ['0 = 0', '1 = 0', '-1 = 0', '0.04 = 0', '-0.6 = 0', '3 = 0'];
+  const constSolutions = [{x0: 'every number'}, {},{},{},{},{}];
+  const coeffsB   = [1, 2, -1, 0, 0.6, -4];
+  const linearStr = ['x = 0', '2*x + 1 = 0', '-x - 1 = 0', '0.04 = 0', '0.6*x - 0.6 = 0', '-4*x + 3 = 0'];
+  const linearSolutions = [{x: 0}, {x: -0.5},{x: -1},{},{x: 1},{x: 0.75}];
+  const coeffsA = [0, 1, 2, -1, -5, 1];
+  const squareStr = ['x = 0', 'x^2 + 2*x + 1 = 0', '2*x^2 - x - 1 = 0', '-x^2 + 0.04 = 0', '-5*x^2 + 0.6*x - 0.6 = 0', 'x^2 - 4*x + 3 = 0'];
+  const squareSolutions = [{x: 0}, {'x1,2': -1},{x1: 1, x2: -0.5},{'x1,2': 0.2},{},{x1: 3, x2:1}];
+  
+  it("showConstantEquation(c) is a function", () => {
+    expect(showConstantEquation).toBeInstanceOf(Function);
+  });
+  for (let i = 0; i < coeffsC.length; i++)
+    it(`returns ${constStr[i]} to be the constant equation with coefficient c = ${coeffsC[i]}`, () => {
+      expect(showConstantEquation(coeffsC[i])).toEqual(constStr[i]);
+    });
+  
+  it("showLinearEquation(b,c) is a function", () => {
+    expect(showLinearEquation).toBeInstanceOf(Function);
+  });
+  for (let i = 0; i < coeffsC.length; i++)
+    it(`returns ${linearStr[i]} to be the linear equation with coefficients b = ${coeffsB[i]}, c = ${coeffsC[i]}`, () => {
+      expect(showLinearEquation(coeffsB[i],coeffsC[i])).toEqual(linearStr[i]);
+    });
+  
+  it("showSquareEquation(a,b,c) is a function", () => {
+    expect(showSquareEquation).toBeInstanceOf(Function);
+  });
+  for (let i = 0; i < coeffsC.length; i++)
+    it(`returns ${squareStr[i]} to be the square equation with coefficients a = ${coeffsA[i]}, b = ${coeffsB[i]}, c = ${coeffsC[i]}`, () => {
+      expect(showSquareEquation(coeffsA[i], coeffsB[i],coeffsC[i])).toEqual(squareStr[i]);
+    });
+
+  it("solveConstantEquation(c) is a function", () => {
+    expect(solveConstantEquation).toBeInstanceOf(Function);
+  });
+  for (let i = 0; i < coeffsC.length; i++)
+    it(`returns solution ${constSolutions[i]} for the constant equation with coefficient c = ${coeffsC[i]}`, () => {
+      expect(solveConstantEquation(coeffsC[i])).toEqual(constStr[i]);
+    });
+  
+  it("showLinearEquation(b,c) is a function", () => {
+    expect(showLinearEquation).toBeInstanceOf(Function);
+  });
+  for (let i = 0; i < coeffsC.length; i++)
+    it(`returns ${linearStr[i]} to be the linear equation with coefficients b = ${coeffsB[i]}, c = ${coeffsC[i]}`, () => {
+      expect(showLinearEquation(coeffsB[i],coeffsC[i])).toEqual(linearStr[i]);
+    });
+  
+  it("showSquareEquation(a,b,c) is a function", () => {
+    expect(showSquareEquation).toBeInstanceOf(Function);
+  });
+  for (let i = 0; i < coeffsC.length; i++)
+    it(`returns ${squareStr[i]} to be the square equation with coefficients a = ${coeffsA[i]}, b = ${coeffsB[i]}, c = ${coeffsC[i]}`, () => {
+      expect(showSquareEquation(coeffsA[i], coeffsB[i],coeffsC[i])).toEqual(squareStr[i]);
+    });
+
+});
+
+
+describe(`Checks the input function`, () => {  
+  it("askInput(message) is a function", () => {
     expect(askInput).toBeInstanceOf(Function);
   });
   
@@ -91,17 +226,4 @@ describe(`Checks the third task point`, () => {
   }
   //восстанавливаем prompt в конце тестирования askInput
   window.prompt = originalPrompt;
-
-  it("is a function", () => {
-    expect(calcDigitsSum).toBeInstanceOf(Function);
-  });
-  
-  const numbers = [123, -345443, 348.2];
-  const digitsSums = [6, 23, 17]; 
-  
-  for (let i = 0; i < digitsSums.length; i++){
-    it(`returns ${digitsSums[i]} to be sum of digits in ${numbers[i]}`, () => {
-      expect(calcDigitsSum(numbers[i])).toBe(digitsSums[i]);
-    });
-  }
 });
