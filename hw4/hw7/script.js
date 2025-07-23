@@ -1,5 +1,10 @@
 // создаём форму
-const testForm = new InitialForm();
+let testForm;
+
+document.querySelector('#task1').onclick = () => {
+  document.querySelector('#task1').hidden = true;
+  textForm = new InitialForm();
+}
 
 /*/ теперь добавляем обработчики событий
 // фокусируемся на input

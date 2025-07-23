@@ -1,47 +1,109 @@
 document.querySelector('#task1').onclick = () => {
-  const a = askInput("Input variable a:");
-  const b = askInput("Input variable b:");
-  console.log(`${a} + ${b} = ${calcSum(a,b)}`);
-  console.log(`${a} * ${b} = ${calcComposition(a,b)}`);
+  const str = askInput("Input dd.mm.yyyy:");
+  console.log(`${str} ${isDate(str) ? 'is' : 'is not'} valid date`);
 }
 
 document.querySelector('#task2').onclick = () => {
-  const strA = askInput("Input the first string:");
-  const strB = askInput("Input the second string:");
-  console.log(`Strings '${strA}' and '${strB}' have in summary ${calcSymbolsCount(strA, strB)} symbols`);
+  const str = askInput("Input email:");
+  console.log(`${str} ${isEmail(str) ? 'is' : 'is not'} email`);
 }
 
 document.querySelector('#task3').onclick = () => {
-  const num = askInput("Input a number");
-  console.log(`Sum of digits in ${num} is ${calcDigitsSum(num)}`);
+  const str = askInput("Input belarussian telephone number +375 xx xxx xx xx:");
+  console.log(`${str} ${isTelephoneNumber(str) ? 'is' : 'is not'} a valid telephone number`);
 }
 
-function calcSum(a, b){
-  return Number(a) + Number(b);
+//dd.mm.yyyy
+function isDate (str){
+  // обрезаем лишние пробелы
+  str = str.trim();
+  const regexp = /[0-3][0-9]\.[01][0-9]\.[12][0-9]{3}/;
+  // строка должна содержать regexp
+  // и полностью с ним совпадать => length = 10
+  if(str.length != 10 || !regexp.test(str))
+    return false;
+  
+  // если regexp - OK, парсим и проверяем дальше
+  const [day, month, year] = str.split('.').map(el => Number(el));
+
+  if (!isBetween(day, 1, 31) || !!isBetween(month, 1, 12) || !isBetween(year, 0, 3000))
+    return false;
+
+  // проверяем 31 число
+  if(day == 31 && !has31days(month))
+    return false;
+
+  // проверяем високосность
+  if(day == 29 && !isLeap(year))
+    return false;
+  
+  return true;
 }
 
-function calcComposition(a, b){
-  return a * b;
+function isRegexp (str, regexp){
+  return Boolean(regexp.test(str) && str.match(regexp)[0].length == str.length);
 }
 
-function calcSymbolsCount(strA, strB){
-  return strA?.length + strB?.length;
+function isBetween (x, min, max){
+  return Boolean((x >= min) && (x <= max));
 }
-    
+
+function has31days (month) {
+  return Boolean([1,3,5,7,8,10,12].find(el => (el == month)) + 1);
+}
+
+function isLeap (year) {
+  return Boolean(
+    !(year % 400) || 
+    (!(year % 4) && (year % 100)));
+}
+
+function isEmail (str){
+  // обрезаем лишние пробелы
+  str = str.trim();
+  //не-цифры считаем необязательными
+  const regexp = /[a-zA-Z_\.0-9]+@[a-z0-9]+\.[a-z]{2,5}/;
+  
+  return isRegexp(str, regexp);
+}
+
+function isTelephoneNumber (str){
+  // обрезаем лишние пробелы
+  str = str.trim();
+  //не-цифры считаем необязательными
+  const regexp = /\+\s?[0-9]{1,3}\s?[0-9]{2,3}\s?[0-9]{2,3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}/;
+  // строка должна содержать regexp
+  // и полностью с ним совпадать
+  if(!isRegexp(str, regexp))
+    return false;
+  
+  //если regexp - OK, проверяем код города/моб.оператора
+  const digits = str.split('').filter((el) => (el === '0' || (el >= 1 && el <= 9)));
+  const code = Number(digits[3] + digits[4]);
+
+  return (isCityCode(code) || isMobyCode(code));
+}
+
+function isCityCode (num) {
+  return Boolean(isBetween(num, 15, 17) || isBetween(num, 21, 23));
+}
+
+function isMobyCode(num){
+  return Boolean([25,29,33,44].find(el => (el == num)) + 1);
+}
+
 function askInput(message) {
   return prompt(message,"");
 }
 
-function calcDigitsSum(num) {
-  return num.toString().split('').reduce((acc, el) => {
-    return Number(el) ? acc + Number(el) : acc;
-  }, 0);
-}
-
 module.exports = {
-  calcSum,
-  calcComposition,
-  calcSymbolsCount,    
+  isRegexp,
+  isDate,
+  has31days,
+  isLeap,
+  isEmail,
+  isTelephoneNumber,
+  isCityCode,
+  isMobyCode,
   askInput,
-  calcDigitsSum
 };
