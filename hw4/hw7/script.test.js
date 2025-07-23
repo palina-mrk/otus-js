@@ -6,11 +6,12 @@ const htmlData = fs.readFileSync("./index.html");
 document.body.innerHTML = htmlData;
 
 const  { 
-  calcSum,
-  calcComposition,
-  calcSymbolsCount,
-  askInput,
-  calcDigitsSum
+  InitialForm,
+  createGlobalContainer,
+  createHiddenButton,
+  createInput,
+  createParagraph,
+  createTitle,
 } = require('./script.js');
 
 describe(`Checks the first task point`, () => {
