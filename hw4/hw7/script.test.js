@@ -127,14 +127,16 @@ describe(`Checks the html-elements of InputForm`, () => {
 });
 
 /*
-clearInput = ()
-  this.removeFirstParagraph = ()
-  this.getMessage = ()
-  this.addParagraph = ()
-  */
+this.clearInput()
+this.removeFirstParagraph()
+this.getMessage()
+this.addParagraph()
+*/
 describe(`Checks the methods of InputForm`, () => {
-  
-  const testForm = new InitialForm();
+  let testForm;
+  beforeEach(() => {
+    testForm = new InitialForm();
+  })
 
   it("method clearInput() is a function", () => {
     expect(testForm.clearInput).toBeInstanceOf(Function);
@@ -155,15 +157,246 @@ describe(`Checks the methods of InputForm`, () => {
   it("method removeFirstParagraph() is a function", () => {
     expect(testForm.removeFirstParagraph).toBeInstanceOf(Function);
   });
-  it(`clears the input form and hides the button`, () => {
-    testForm.input.value = 'some message';
-    testForm.button.hidden = false;
-    expect(testForm.input.value.length > 0).toBe(true);
+  it(`removes the first paragraph, if they exist,
+    do anything, if not`, () => {  
+    
+      testForm.paragraphs.forEach((el,ind) => {el.innerText = `${testForm.paragraphs.length - 1 - ind}`});
+      let pCount = testForm.paragraphs.length;
+      
+      while(testForm.paragraphs.length > 0){
+        testForm.removeFirstParagraph();
+        expect(testForm.paragraphs.length).toBe(--pCount);
+        testForm.paragraphs.forEach((el,ind) => {
+          expect(el.innerText).toBe(`${testForm.paragraphs.length - 1 - ind}`);
+        });
+      }
+      testForm.removeFirstParagraph();
+      expect(testForm.paragraphs.length).toBe(0);
+  });
+  
+  it("method getMessage() is a function", () => {
+    expect(testForm.getMessage).toBeInstanceOf(Function);
+  });
+
+  it(`returns the message form input form, if not empty
+    after concating first and last spaces`, () => {  
+      testForm.input.value = '  my text  ';
+      
+      expect(testForm.getMessage()).toBe('my text');
+  });
+
+  it(`returns null for empty message`, () => {  
+      testForm.input.value = '    ';
+      
+      expect(testForm.getMessage()).toBe(null);
+  });
+
+  it("method addParagraph() is a function", () => {
+    expect(testForm.addParagraph).toBeInstanceOf(Function);
+  });
+  it(`adds a paragraph with the message 
+    taken from the input field
+    with cutten first and last spaces`, () => {  
+      testForm.paragraphs.forEach((el,ind) => {el.innerText = `${ind}`});
+      testForm.input.value = 'my text';
+      console.log(testForm.input.value, testForm.paragraphs);
+      const pCount = testForm.paragraphs.length;
+      
+      testForm.addParagraph();
+      expect(testForm.paragraphs.length).toBe(pCount + 1);
+      testForm.paragraphs.forEach((el, ind) => {
+        if(ind == pCount)
+          expect(el.innerText).toBe('my text');
+        else
+          expect(el.innerText).toBe(ind + '');
+      });
+  });
+});
+
+// фокусируемся на input this.input.focus();
+// показать кнопку, если появилось сообщение в input
+// и скрыть, если исчезло
+//this.input.addEventListener("input", () => {})
+
+// добавить параграф по клику и убрать первый,
+// если их больше 5
+// this.button.addEventListener('click', () => {...})
+
+// сделать то же самое по нажатию Enter
+//this.input.addEventListener ('keydown',(event) => {})
+describe('Checks the event listener oninput', () => {
+  let testForm;
+  beforeEach(() => {
+    testForm = new InitialForm();
+  })
+
+  it(`adding 'some text' to the input value causes showing the button`, () => {
+    //создаем событие
+    let event = new Event('input');
+    expect(testForm.button.hidden).toBe(true);
+
+    //вводим текст
+    testForm.input.value = 'some text';
+    //вызываем событие
+    testForm.input.dispatchEvent(event);
     expect(testForm.button.hidden).toBe(false);
+  })
 
-    testForm.clearInput();
 
-    expect(testForm.input.value.length).toBe(0);
+  it(`adding only spaces to the input value causes hidding the button`, () => {
+    //создаем событие
+    let event = new Event('input');
+    expect(testForm.button.hidden).toBe(true);
+
+    //вводим текст
+    testForm.input.value = '   ';
+    //вызываем событие
+    testForm.input.dispatchEvent(event);
     expect(testForm.button.hidden).toBe(true);
   })
-});
+})
+
+describe('Checks the event listener onclick', () => {
+  let testForm;
+  {
+    testForm = new InitialForm();
+
+    it(`click on button causes adding a paragraph
+      with message from input field 
+      until 5 paragraphs`, () => {
+      //создаем событие
+      let event = new Event('click');
+      testForm.paragraphs.forEach((el, i) => {el.innerText = `${i}`; });
+
+      while(testForm.paragraphs.length < 5){
+        let countP = testForm.paragraphs.length;
+        //вводим текст
+        testForm.input.value = `${countP}`;
+        
+        //вызываем событие
+        testForm.button.dispatchEvent(event);
+        expect(testForm.paragraphs.length).toBe(countP + 1);
+        testForm.paragraphs.forEach((el,ind) => {
+          expect(el.innerText).toBe(`${ind}`);
+        });
+      }
+    })
+
+    it(`click on button causes adding a paragraph
+      with message from input field and removing the first
+      if there are 5 paragraphs`, () => {
+      //создаем событие
+        expect(testForm.paragraphs.length).toBe(5);
+      let event = new Event('click');
+      
+      for(let counter = 6; counter < 10; counter++){
+        
+        //вводим текст
+        testForm.input.value = `${counter}`;
+        //читаем текст первого параграфа
+        let textToClear = testForm.paragraphs[0].innerText;
+
+        //вызываем событие
+        testForm.button.dispatchEvent(event);
+        expect(testForm.paragraphs.length).toBe(5);
+        expect(testForm.paragraphs.find((el) => Boolean(el == textToClear))).toBe(undefined);
+      }
+    })
+  }
+  it(`after click on button input field becomes empty`, () => {
+    testForm = new InitialForm();
+    //создаем событие
+    let event = new Event('click');
+    
+    testForm.input.value = `some text`;
+    //вызываем событие
+    testForm.button.dispatchEvent(event);
+    expect(testForm.input.value).toBe('');
+  })
+})
+
+
+describe('Checks the event listener onkeydown', () => {
+  let testForm;
+  let event;
+  {
+    testForm = new InitialForm();
+    event = new KeyboardEvent('keydown', {key: 'Enter'});
+
+    it(`click on Enter causes adding a paragraph
+      with message from input field 
+      until 5 paragraphs`, () => {
+      
+      testForm.paragraphs.forEach((el, i) => {el.innerText = `${i}`; });
+
+      while(testForm.paragraphs.length < 5){
+        let countP = testForm.paragraphs.length;
+        //вводим текст
+        testForm.input.value = `${countP}`;
+        
+        //вызываем событие
+        testForm.input.dispatchEvent(event);
+        expect(testForm.paragraphs.length).toBe(countP + 1);
+        testForm.paragraphs.forEach((el,ind) => {
+          expect(el.innerText).toBe(`${ind}`);
+        });
+      }
+    })
+
+    it(`click on Enter causes adding a paragraph
+      with message from input field and removing the first
+      if there are 5 paragraphs`, () => {
+      //создаем событие
+      expect(testForm.paragraphs.length).toBe(5);
+      
+      for(let counter = 6; counter < 10; counter++){
+        
+        //вводим текст
+        testForm.input.value = `${counter}`;
+        //читаем текст первого параграфа
+        let textToClear = testForm.paragraphs[0].innerText;
+
+        //вызываем событие
+        testForm.input.dispatchEvent(event);
+        expect(testForm.paragraphs.length).toBe(5);
+        expect(testForm.paragraphs.find((el) => Boolean(el == textToClear))).toBe(undefined);
+      }
+    })
+  }
+  it(`after click on Enter input field becomes empty`, () => {
+    testForm = new InitialForm();
+    event = new KeyboardEvent('keydown', {key: 'Enter'});
+    
+    testForm.input.value = `some text`;
+    //вызываем событие
+    testForm.input.dispatchEvent(event);
+    expect(testForm.input.value).toBe('');
+  })
+  it(`after click on Enter button becomes hidden`, () => {
+    testForm = new InitialForm();
+    event = new KeyboardEvent('keydown', {key: 'Enter'});
+    
+    testForm.input.value = `some text`;
+    //вызываем событие
+    testForm.input.dispatchEvent(event);
+    expect(testForm.button.hidden).toBe(true);
+  })
+  it(`click on Enter do nothing if
+    in the input field are only spaces: "    "`, () => {
+      testForm = new InitialForm();
+      event = new KeyboardEvent('keydown', {key: 'Enter'});
+    
+      testForm.paragraphs.forEach((el, i) => {el.innerText = `${i}`; });
+
+      let countP = testForm.paragraphs.length;
+      //вводим текст
+      testForm.input.value = '        ';
+        
+      //вызываем событие
+      testForm.input.dispatchEvent(event);
+      expect(testForm.paragraphs.length).toBe(countP);
+      testForm.paragraphs.forEach((el,ind) => {
+        expect(el.innerText).toBe(`${ind}`);
+      });
+    })
+})

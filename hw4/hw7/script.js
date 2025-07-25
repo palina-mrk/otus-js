@@ -109,7 +109,8 @@ function InitialForm(){
   });
   // сделать то же самое по нажатию Enter
   this.input.addEventListener ('keydown',(event) => {
-    if(event.key != 'Enter')
+    if(event.key != 'Enter'
+      || !this.getMessage())
       return;
     this.addParagraph(this.getMessage());
     if(this.paragraphs.length > 5)
