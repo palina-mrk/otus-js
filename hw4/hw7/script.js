@@ -6,42 +6,13 @@ document.querySelector('#task1').onclick = () => {
   textForm = new InitialForm();
 }
 
-/*/ теперь добавляем обработчики событий
-// фокусируемся на input
-testForm.input.focus();
-// показать кнопку, если появилось сообщение в input
-// и скрыть, если исчезло
-testForm.input.addEventListener("input", () => {
-  testForm.button.hidden = !testForm.getMessage();
-});
-
-// добавить параграф по клику и убрать первый,
-// если их больше 5
-testForm.button.addEventListener('click', () => {
-  testForm.addParagraph(testForm.getMessage());
-  if(testForm.paragraphs.length > 5)
-    testForm.removeFirstParagraph();
-  testForm.clearInput();
-  testForm.input.focus();
-});
-// сделать то же самое по нажатию Enter
-testForm.input.addEventListener ('keydown',(event) => {
-  if(event.key != 'Enter')
-    return;
-  testForm.addParagraph(testForm.getMessage());
-  if(testForm.paragraphs.length > 5)
-    testForm.removeFirstParagraph();
-  testForm.clearInput();
-});*/
-
+// функции для создания html - элементов
 function createGlobalContainer(){
   const newContainer = document.createElement('div');
-//  newContainer.className = className;
-//  document.body.append(newContainer);
   return newContainer;
 }
 
-function createTitle (n, message){
+function createTitle (n, message = `a title h${n}`){
   const newTitle = document.createElement('h'+ n);
   newTitle.innerText = message;
   //newTitle.className = className;
@@ -49,73 +20,27 @@ function createTitle (n, message){
 }
 
 //создает параграф с сообщением message
-function createParagraph(message){
+function createParagraph(message = 'a paragraph'){
   const nextParagraph = document.createElement('p');
   nextParagraph.innerText = message;
-//  nextParagraph.className = className;
-//  parent.append(nextParagraph);
   return nextParagraph;
 }
 
 function createInput(){
   const newInput = document.createElement('input');
-//  newInput.className = className;
-//  parent.append(newInput);
   return newInput;
 }
 
-function createHiddenButton(message){
+function createHiddenButton(message = 'a button'){
   const newButton = document.createElement('button');
-//  newButton.className = className;
   newButton.textContent = message;
   newButton.hidden = true;
-//  parent.append(newButton);
   return newButton;
 }
 
-/*
-function addInitialForm(){
-  const container = createGlobalContainer('test-container');
-  const title = createTitle(4, 'test-section', 'Testing paragraphs');
-  container.append(title);
-  const paragraphs = [];
-  for(let i = 0; i < 3; i++){
-    paragraphs[i] = createParagraph('writing-paragraph',`paragraph number ${i + 1}`);
-    container.append(paragraphs[i]);
-  }
-  const input = createInput('input-field');
-  const emptyParagraph = createParagraph('empty-paragraph','');
-  const button = createButton( 'button','add a paragraph');
-  
-  container.append(input);
-  container.append(emptyParagraph);
-  container.append(button);
-  document.body.append(container);
-
-  return {
-    container,
-    title,
-    paragraphs,
-    input,
-    emptyParagraph,
-    button,
-    addParagraph (message) {
-      paragraphs.push(createParagraph('writing-paragraph',message));
-    },
-    removeFirstParagraph () {
-      if(paragraphs.length > 0) {
-        paragraphs.shift().remove();
-      }
-    },
-    getMessage() {
-      const message = input.value.trim();
-      return (message?.length ? message : null);
-    },
-  };
-}
-*/
-
+// конструктор для создания требуемой в зазаче формы
 function InitialForm(){
+  // создаём элементы и добавляем в дерево
   const container = createGlobalContainer();
   const title = createTitle(4, 'Testing paragraphs');
   container.append(title);
@@ -126,11 +51,12 @@ function InitialForm(){
     container.append(paragraphs[i]);
   }
   const input = createInput();
-  const emptyParagraph = createParagraph('');
+  // настраиваем внешний вид input под наши цели
+  input.style.display = 'block';
+  input.style.marginBottom = '0.5em';
   const button = createHiddenButton('add a paragraph');
   
   container.append(input);
-  container.append(emptyParagraph);
   container.append(button);
   document.body.append(container);
 
@@ -139,7 +65,6 @@ function InitialForm(){
   this.title = title;
   this.paragraphs = paragraphs;
   this.input = input;
-  this.emptyParagraph = emptyParagraph;
   this.button = button;
 
   // добавляем методы
